@@ -6,8 +6,6 @@
 
 An offline Aerospace Command and Control (C2) simulation system featuring Natural Language Processing (NLP) at the edge, a "Human-in-the-Loop" authorization protocol, and real-time physical telemetry using an Arduino-based Pan-Tilt servo mechanism.
 
-> 🎥 **[Insert a GIF or YouTube link here showing you giving a voice command and the physical Pan-Tilt moving smoothly]**
-
 ## 🚀 Key Features
 
 * **🎙️ Edge Voice Command:** Utilizes the Web Speech API to process military/aviation jargon locally, without relying on cloud servers.
