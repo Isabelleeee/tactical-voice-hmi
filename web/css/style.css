@@ -1,0 +1,107 @@
+/* Reset básico */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+    background-color: #050505; 
+    height: 100vh; 
+    font-family: 'Segoe UI', sans-serif; 
+    color: white; 
+    overflow: hidden; /* Corta tudo que vazar da tela */
+    position: relative;
+}
+
+/* =========================================
+   CAMADA 1: HORIZONTE DINÂMICO NOVO (Z-INDEX 1)
+   ========================================= */
+#horizon-canvas {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100vw; /* Ocupa exatamente a largura da tela */
+    height: 100vh; /* Ocupa exatamente a altura da tela */
+    z-index: 1; 
+    display: block;
+}
+
+/* =========================================
+   CAMADA 2: COCKPIT (Z-INDEX 2)
+   ========================================= */
+#cockpit-image {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; /* Preenche a tela mantendo a proporção */
+    z-index: 2; 
+    pointer-events: none; /* Deixa você clicar nos botões através da imagem */
+    filter: drop-shadow(0px 10px 30px rgba(0,0,0,0.8)); /* Sombra para dar profundidade */
+    
+}
+
+/* =========================================
+   CAMADA 3: INSTRUMENTOS E IA (Z-INDEX 3)
+   ========================================= */
+.dashboard-panel { 
+    position: absolute; bottom: 0; left: 0;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-top-right-radius: 40px; 
+    padding: 20px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; 
+    box-shadow: 10px -10px 40px rgba(0,0,0,0.9);
+    border-top: 2px solid #333; border-right: 2px solid #333;
+    z-index: 3; 
+}
+
+.ai-panel {
+    position: absolute; bottom: 30px; right: 30px;
+    background: rgba(10, 10, 10, 0.9); padding: 25px; border-radius: 15px;
+    border-left: 5px solid #00d4ff; width: 450px;
+    box-shadow: -10px 10px 40px rgba(0,0,0,0.8);
+    z-index: 3; 
+}
+
+.header-tag { font-size: 12px; letter-spacing: 3px; color: #00d4ff; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; }
+#status-container { font-family: 'Consolas', monospace; margin-bottom: 20px;}
+#status-label { color: #888; font-size: 0.8rem; margin-bottom: 5px; }
+#status-text { color: #ffffff; font-size: 1.1rem; font-weight: bold; min-height: 40px; }
+
+#btn-mic { 
+    width: 100%; padding: 15px; font-size: 14px; font-weight: bold; 
+    background-color: #00d4ff; color: #000; border: none; border-radius: 8px; 
+    cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+}
+#btn-mic:hover { background-color: #0099cc; }
+.mic-ativo { background-color: #ff0000 !important; color: white !important; }
+
+/* Adicionando um hover pro nosso botão USB novo */
+#btn-usb:hover { background-color: #cc7a00 !important; }
+
+/* =========================================
+   ALERTA VISUAL DO SISTEMA DE COMANDO (C2)
+   ========================================= */
+.status-aguardando {
+    border-left: 5px solid #ffcc00 !important; /* Borda Amarela */
+    background-color: rgba(40, 30, 0, 0.9) !important; /* Fundo levemente amarelado */
+    animation: pulse-warning 1s infinite;
+    transition: 0.3s;
+}
+
+@keyframes pulse-warning {
+    0% { box-shadow: -5px 0 15px rgba(255, 204, 0, 0.2); }
+    50% { box-shadow: -5px 0 35px rgba(255, 204, 0, 0.8); }
+    100% { box-shadow: -5px 0 15px rgba(255, 204, 0, 0.2); }
+}
+
+/* =========================================
+   ALERTA DE EMERGÊNCIA (GUERRA ELETRÔNICA)
+   ========================================= */
+.status-emergencia {
+    border-left: 5px solid #ff0000 !important; /* Borda Vermelha */
+    background-color: rgba(60, 0, 0, 0.9) !important; /* Fundo avermelhado */
+    animation: pulse-danger 0.5s infinite; /* Pisca bem mais rápido */
+    transition: 0.2s;
+}
+
+@keyframes pulse-danger {
+    0% { box-shadow: -5px 0 20px rgba(255, 0, 0, 0.4); }
+    50% { box-shadow: -5px 0 50px rgba(255, 0, 0, 0.9); }
+    100% { box-shadow: -5px 0 20px rgba(255, 0, 0, 0.4); }
+}

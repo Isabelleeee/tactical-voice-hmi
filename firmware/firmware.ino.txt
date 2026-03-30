@@ -1,0 +1,63 @@
+#include <Servo.h>
+
+Servo servoTilt; // Pin 9 (Nose up/down)
+Servo servoPan;  // Pin 10 (Base left/right)
+
+// Variables to store where the motor SHOULD go (Target)
+int targetTilt = 90;
+int targetPan = 90;
+
+// Variables to store where the motor IS NOW (Current)
+// We use "float" (decimals) for the smoothing math to work properly
+float currentTilt = 90.0;
+float currentPan = 90.0;
+
+void setup() {
+  Serial.begin(115200); 
+  Serial.setTimeout(10); // Super fast read timeout to avoid blocking the USB port
+  
+  servoTilt.attach(9);
+  servoPan.attach(10);
+  
+  // Initialize base looking forward and leveled
+  servoTilt.write(90);
+  servoPan.write(90);
+}
+
+void loop() {
+  // ==========================================
+  // 1. RECEIVE COMMAND FROM COMPUTER (WEB SERIAL)
+  // ==========================================
+  if (Serial.available() > 0) {
+    String msg = Serial.readStringUntil('\n');
+    int comma = msg.indexOf(',');
+    
+    if (comma > 0) {
+      int virtualPitch = msg.substring(0, comma).toInt();
+      int virtualRoll = msg.substring(comma + 1).toInt();
+      
+      // Map screen values to physical degrees (with inverted tilt/nose)
+      targetTilt = map(virtualPitch, -40, 40, 130, 50); 
+      targetPan = map(virtualRoll, -45, 45, 45, 135);
+      
+      // Mechanical safety constraints to avoid stressing the plastic structure
+      targetTilt = constrain(targetTilt, 0, 180);
+      targetPan = constrain(targetPan, 0, 180);
+    }
+  }
+
+  // ==========================================
+  // 2. THE SMOOTHING MAGIC (EASING FILTER)
+  // ==========================================
+  // The secret formula: The motor moves only a % of the distance to the target per loop.
+  // The number "0.05" represents the inertia speed.
+  currentTilt += (targetTilt - currentTilt) * 0.05;
+  currentPan += (targetPan - currentPan) * 0.05;
+
+  // Send the calculated, smooth position to the physical motors
+  servoTilt.write((int)currentTilt);
+  servoPan.write((int)currentPan);
+
+  // A 15-millisecond breather for the processor and gears
+  delay(15);
+}
